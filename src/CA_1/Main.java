@@ -1,6 +1,7 @@
 package CA_1;
 
 
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ public class Main {
 
         try{
 
-            Scanner file = new Scanner(new FileReader("src/CA_1/" + fileName.toUpperCase() + ".txt"));
+            Scanner file = new Scanner(new FileReader("src/main/java/"+fileName.toUpperCase() + ".txt"));
             System.out.println("File read successfully");
 
             //Read the data into arrays
@@ -42,7 +43,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.println(" Enter choice: ");
+                    System.out.println(" Enter sorting option: ");
                     System.out.println(" 1. Sort by book title ");
                     System.out.println(" 2. Sort by number of pages");
 
@@ -66,7 +67,24 @@ public class Main {
                     displayResults(bookTitles, numPages);
                     break;
                 case 2:
-                    System.out.println("SEARCH selected");
+                System.out.println(" Enter searching option: ");
+                System.out.println(" 1. Search the book by title ");
+                System.out.println(" 2. Search the book by number of pages");
+
+                int searchingChoice = inputUtilities.askUserForInt("Search by: ", 1, 2);
+                if (searchingChoice == 1) {
+              String title = inputUtilities.askUserForText("Enter the book title: ");
+                 searchByTitle(title, bookTitles, numPages);
+
+
+                } else if (searchingChoice == 2) {
+                  int page = inputUtilities.askUserForInt("Enter the number of pages: ");
+                 searchByPages(page, bookTitles, numPages);
+                
+                } else {
+                    System.out.println("Invalid sorting criteria");
+                    return;
+                }
 
                     break;
                 default:
@@ -102,6 +120,8 @@ public class Main {
             }
         }
     }
+
+
 
 
     private static void mergeSortPagesAscending(String[] bookTitles, int[] numPages) {
@@ -169,12 +189,63 @@ public class Main {
         }
     }
 
+                // Search book by title
+private static void searchByTitle(String title, String[] titles, int[] pages) {
+    boolean found = false;
+    for (int i = 0; i < titles.length; i++) {
+        if (titles[i].toLowerCase().contains(title.toLowerCase())) {
+            System.out.println("Book found index position  " + i + ", and number of page is " + pages[i]);
+          System.out.println("Book full title is  "+ titles[i]);
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        System.out.println("Book not found.");
+    }
+}
+
+  // Search book by number of pages
+  private static void searchByPages(int page, String[] titles, int[] pagesArray) {
+      // Ensure that the pagesArray and titles are sorted based on pagesArray
+      mergeSortPagesAscending(titles, pagesArray);
+
+      int left = 0;
+      int right = pagesArray.length - 1;
+      boolean found = false;
+
+      while (left <= right) {
+          int mid = left + (right - left) / 2;
+
+          // Check if the middle element is the target page count
+          if (pagesArray[mid] == page) {
+              System.out.println("Book found at index position " + mid + ", and book full title is " + titles[mid]);
+              found = true;
+              break;
+          }
+
+          // If the target page count is greater, ignore the left half
+          if (pagesArray[mid] < page) {
+              left = mid + 1;
+          }
+          // If the target page count is smaller, ignore the right half
+          else {
+              right = mid - 1;
+          }
+      }
+
+      if (!found) {
+          System.out.println("Book not found.");
+      }
+  }
+
+
 
 
 //    Display the results
     private static void displayResults(String[] bookTitles, int[] numPages) {
         for (int i = 0; i < bookTitles.length; i++) {
-            System.out.println(i+1 + ". " + bookTitles[i] + ", " + numPages[i]);
+            System.out.println(bookTitles[i] + ", " + numPages[i]);
         }
 
     }
